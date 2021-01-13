@@ -120,7 +120,7 @@ data "aws_ami" "ecs" {
 resource "aws_key_pair" "user" {
   count      = "${var.instance_keypair != "" ? 0 : 1}"
   key_name   = "${var.name}"
-  public_key = "${file("~/.ssh/id_rsa.pub")}"
+  public_key = "${var.instance_keypair}"
 }
 
 resource "aws_launch_configuration" "instance" {
