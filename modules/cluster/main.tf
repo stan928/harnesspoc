@@ -97,16 +97,6 @@ resource "aws_security_group_rule" "instance_out_all" {
   security_group_id = "${aws_security_group.instance.id}"
 }
 
-data "template_file" "user_data" {
-  template = "${file("${path.module}/user_data.sh")}"
-
-  vars {
-    additional_user_data_script = "${var.additional_user_data_script}"
-    ecs_cluster                 = "${aws_ecs_cluster.ecs.name}"
-    log_group                   = "${aws_cloudwatch_log_group.instance.name}"
-  }
-}
-
 data "aws_ami" "ecs" {
   most_recent = true
 
@@ -134,7 +124,6 @@ resource "aws_launch_configuration" "instance" {
   image_id             = "${var.image_id != "" ? var.image_id : data.aws_ami.ecs.id}"
   instance_type        = "${var.instance_type}"
   iam_instance_profile = "${aws_iam_instance_profile.instance.name}"
-  user_data            = "${data.template_file.user_data.rendered}"
   security_groups      = ["${aws_security_group.instance.id}"]
   key_name             = "${var.instance_keypair != "" ? var.instance_keypair : element(concat(aws_key_pair.user.*.key_name, list("")), 0)}"
 
