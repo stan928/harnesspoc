@@ -2,6 +2,10 @@ terraform {
   required_version = ">= 0.11"
 }
 
+provider "aws" {
+  region  = "us-west-2"
+}
+
 resource "aws_ecs_cluster" "ecs" {
   name = "${var.name}"
 }
