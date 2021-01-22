@@ -123,23 +123,23 @@ resource "aws_key_pair" "user" {
   public_key = "${var.instance_keypair}"
 }
 
-resource "aws_launch_configuration" "instance" {
-  name_prefix          = "${var.name}-lc"
-  image_id             = "${var.image_id != "" ? var.image_id : data.aws_ami.ecs.id}"
-  instance_type        = "${var.instance_type}"
-  iam_instance_profile = "${aws_iam_instance_profile.instance.name}"
-  security_groups      = ["${aws_security_group.instance.id}"]
-  key_name             = "${var.instance_keypair != "" ? var.instance_keypair : element(concat(aws_key_pair.user.*.key_name, list("")), 0)}"
-
-  root_block_device {
-    volume_size = "${var.instance_root_volume_size}"
-    volume_type = "gp2"
-  }
-
-  lifecycle {
-    create_before_destroy = true
-  }
-}
+#resource "aws_launch_configuration" "instance" {
+#  name_prefix          = "${var.name}-lc"
+#  image_id             = "${var.image_id != "" ? var.image_id : data.aws_ami.ecs.id}"
+#  instance_type        = "${var.instance_type}"
+#  iam_instance_profile = "${aws_iam_instance_profile.instance.name}"
+#  security_groups      = ["${aws_security_group.instance.id}"]
+#  key_name             = "${var.instance_keypair != "" ? var.instance_keypair : element(concat(aws_key_pair.user.*.key_name, list("")), 0)}"
+#
+#  root_block_device {
+#    volume_size = "${var.instance_root_volume_size}"
+#    volume_type = "gp2"
+#  }
+#
+#  lifecycle {
+#    create_before_destroy = true
+#  }
+#}
 
 resource "aws_autoscaling_group" "asg" {
   name = "${var.name}-asg"
