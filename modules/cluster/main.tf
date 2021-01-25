@@ -8,6 +8,10 @@ provider "aws" {
 
 resource "aws_ecs_cluster" "ecs" {
   name = "${var.name}"
+  capacity_providers = ["FARGATE"]
+  default_capacity_provider_strategy {
+    capacity_provider = "FARGATE"
+  }
 }
 
 resource "aws_cloudwatch_log_group" "instance" {
