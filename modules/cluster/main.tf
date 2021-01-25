@@ -50,56 +50,56 @@ resource "aws_iam_policy" "instance_policy" {
   policy = "${data.aws_iam_policy_document.instance_policy.json}"
 }
 
-resource "aws_iam_role" "instance" {
-  name = "${var.name}-instance-role"
+#resource "aws_iam_role" "instance" {
+#  name = "${var.name}-instance-role"
+#
+#  assume_role_policy = <<EOF
+#{
+#  "Version": "2012-10-17",
+#  "Statement": [
+#    {
+#      "Action": "sts:AssumeRole",
+#      "Principal": {
+#        "Service": "ec2.amazonaws.com"
+#      },
+#      "Effect": "Allow",
+#      "Sid": ""
+#    }
+#  ]
+#}
+#EOF
+#}
+#
+#resource "aws_iam_role_policy_attachment" "ecs_policy" {
+#  role       = "${aws_iam_role.instance.name}"
+#  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role"
+#}
+#
+#resource "aws_iam_role_policy_attachment" "instance_policy" {
+#  role       = "${aws_iam_role.instance.name}"
+#  policy_arn = "${aws_iam_policy.instance_policy.arn}"
+#}
+#
+#resource "aws_iam_instance_profile" "instance" {
+#  name = "${var.name}-instance-profile"
+#  role = "${aws_iam_role.instance.name}"
+#}
 
-  assume_role_policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Action": "sts:AssumeRole",
-      "Principal": {
-        "Service": "ec2.amazonaws.com"
-      },
-      "Effect": "Allow",
-      "Sid": ""
-    }
-  ]
-}
-EOF
-}
-
-resource "aws_iam_role_policy_attachment" "ecs_policy" {
-  role       = "${aws_iam_role.instance.name}"
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role"
-}
-
-resource "aws_iam_role_policy_attachment" "instance_policy" {
-  role       = "${aws_iam_role.instance.name}"
-  policy_arn = "${aws_iam_policy.instance_policy.arn}"
-}
-
-resource "aws_iam_instance_profile" "instance" {
-  name = "${var.name}-instance-profile"
-  role = "${aws_iam_role.instance.name}"
-}
-
-resource "aws_security_group" "instance" {
-  name        = "${var.name}-container-instance"
-  description = "Security Group managed by Terraform"
-  vpc_id      = "${var.vpc_id}"
-  tags        = "${merge(var.tags, map("Name", format("%s-container-instance", var.name)))}"
-}
-
-resource "aws_security_group_rule" "instance_out_all" {
-  type              = "egress"
-  from_port         = 0
-  to_port           = 65535
-  protocol          = "tcp"
-  cidr_blocks       = ["0.0.0.0/0"]
-  security_group_id = "${aws_security_group.instance.id}"
-}
+#resource "aws_security_group" "instance" {
+#  name        = "${var.name}-container-instance"
+#  description = "Security Group managed by Terraform"
+#  vpc_id      = "${var.vpc_id}"
+#  tags        = "${merge(var.tags, map("Name", format("%s-container-instance", var.name)))}"
+#}
+#
+#resource "aws_security_group_rule" "instance_out_all" {
+#  type              = "egress"
+#  from_port         = 0
+#  to_port           = 65535
+#  protocol          = "tcp"
+#  cidr_blocks       = ["0.0.0.0/0"]
+#  security_group_id = "${aws_security_group.instance.id}"
+#}
 
 data "aws_ami" "ecs" {
   most_recent = true
