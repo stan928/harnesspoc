@@ -8,11 +8,11 @@ provider "aws" {
 
 resource "aws_ecs_cluster" "ecs" {
   name = "${var.name}"
-  capacity_providers = ["FARGATE"]
-  default_capacity_provider_strategy {
-    capacity_provider = "FARGATE"
-    weight = 1 
-  }
+#  capacity_providers = ["FARGATE"]
+#  default_capacity_provider_strategy {
+#    capacity_provider = "FARGATE"
+#    weight = 1 
+#  }
 }
 
 resource "aws_cloudwatch_log_group" "instance" {
@@ -55,25 +55,58 @@ resource "aws_iam_policy" "instance_policy" {
   policy = "${data.aws_iam_policy_document.instance_policy.json}"
 }
 
-#resource "aws_iam_role" "instance" {
-#  name = "${var.name}-instance-role"
-#
-#  assume_role_policy = <<EOF
-#{
-#  "Version": "2012-10-17",
-#  "Statement": [
-#    {
-#      "Action": "sts:AssumeRole",
-#      "Principal": {
-#        "Service": "ec2.amazonaws.com"
-#      },
-#      "Effect": "Allow",
-#      "Sid": ""
-#    }
-#  ]
-#}
-#EOF
-#}
+resource "aws_iam_role" "ecs-instance-role" {
+  name = "ecs-instance-role"
+  path = "/"
+  assume_role_policy = "${data.aws_iam_policy_document.ecs-instance-policy.json}"
+}
+
+
+
+data "aws_iam_policy_document" "ecs-instance-policy" {
+   statement {
+  actions = ["sts:AssumeRole"]
+  principals {
+  type = "Service"
+  identifiers = ["ec2.amazonaws.com"]
+  }
+ }
+}
+
+resource "aws_iam_role_policy_attachment" "ecs-instance-role-attachment" {
+   role = "${aws_iam_role.ecs-instance-role.name}"
+   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role"
+}
+
+resource "aws_iam_instance_profile" "ecs-instance-profile" {
+  name = "ecs-instance-profile"
+  path = "/"
+  role = "${aws_iam_role.ecs-instance-role.id}"
+  provisioner "local-exec" {
+  command = "sleep 60"
+ }
+}
+
+resource "aws_iam_role" "ecs-service-role" {
+  name = "ecs-service-role"
+  path = "/"
+  assume_role_policy = "${data.aws_iam_policy_document.ecs-service-policy.json}"
+}
+
+resource "aws_iam_role_policy_attachment" "ecs-service-role-attachment" {
+  role = "${aws_iam_role.ecs-service-role.name}"
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceRole"
+}
+
+data "aws_iam_policy_document" "ecs-service-policy" {
+  statement {
+  actions = ["sts:AssumeRole"]
+  principals {
+  type = "Service"
+  identifiers = ["ecs.amazonaws.com"]
+  }
+ }
+}
 #
 #resource "aws_iam_role_policy_attachment" "ecs_policy" {
 #  role       = "${aws_iam_role.instance.name}"
