@@ -160,7 +160,37 @@ resource "aws_key_pair" "user" {
   key_name   = "${var.name}"
   public_key = "${var.instance_keypair}"
 }
+resource "aws_instance" "ec2_instance" {
+  ami                    = "ami-0d927e3ac55a7b26f"
+  subnet_id              =  "${var.vpc_subnets}" #CHANGE THIS
+  instance_type          = "t2.medium"
+  iam_instance_profile   = "ecsInstanceRole" #CHANGE THIS
+  vpc_security_group_ids = ["sg-0238c495b92e66485"] #CHANGE THIS
+  key_name               = "chens117-harness" #CHANGE THIS
+  ebs_optimized          = "false"
+  source_dest_check      = "false"
+  user_data              = "${data.template_file.user_data.rendered}"
+  root_block_device {
+    volume_type           = "gp2"
+    volume_size           = "30"
+    delete_on_termination = "true"
+  }
 
+#  tags {
+#    Name                   = "openapi-ecs-ec2_instance"
+#}
+
+  lifecycle {
+    ignore_changes         = ["ami", "user_data", "subnet_id", "key_name", "ebs_optimized", "private_ip"]
+  }
+}
+
+data "template_file" "user_data" {
+  template = "${file("${path.module}/user_data.tpl")}"
+  vars = {
+	cl_name = "${var.name}"
+  }
+}
 #resource "aws_launch_configuration" "instance" {
 #  name_prefix          = "${var.name}-lc"
 #  image_id             = "${var.image_id != "" ? var.image_id : data.aws_ami.ecs.id}"
