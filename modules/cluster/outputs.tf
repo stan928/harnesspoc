@@ -1,7 +1,9 @@
 output "cluster_id" {
   value = "${aws_ecs_cluster.ecs.id}"
 }
-
+output "cluster_name"{
+  value = "${aws_ecs_cluster.ecs.name}"
+}
 #output "instance_sg_id" {
 #  value = "${aws_security_group.instance.id}"
 #}

@@ -56,7 +56,7 @@ resource "aws_iam_policy" "instance_policy" {
 }
 
 resource "aws_iam_role" "ecs-instance-role" {
-  name = "ecs-instance-role"
+  name = "${var.name}-ecs-instance-role"
   path = "/"
   assume_role_policy = "${data.aws_iam_policy_document.ecs-instance-policy.json}"
 }
@@ -79,7 +79,7 @@ resource "aws_iam_role_policy_attachment" "ecs-instance-role-attachment" {
 }
 
 resource "aws_iam_instance_profile" "ecs-instance-profile" {
-  name = "ecs-instance-profile"
+  name = "${var.name}-ecs-instance-profile"
   path = "/"
   role = "${aws_iam_role.ecs-instance-role.id}"
   provisioner "local-exec" {
@@ -88,7 +88,7 @@ resource "aws_iam_instance_profile" "ecs-instance-profile" {
 }
 
 resource "aws_iam_role" "ecs-service-role" {
-  name = "ecs-service-role"
+  name = "${var.name}-ecs-service-role"
   path = "/"
   assume_role_policy = "${data.aws_iam_policy_document.ecs-service-policy.json}"
 }
