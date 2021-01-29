@@ -25,7 +25,7 @@ variable "image_id" {
 
 variable "instance_keypair" {
   description = "Instance keypair name"
-  default     = ""
+  default     = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC47IdjvZabKUVWr8wDLdkkOlFqsTRy58a8e+7UvPiXCx8AUxyGmljDm5vUFcVtcil2GdGVDZu6I81ivpTaXY8nZbtNh+bUpgbjVG8wevo6elMgO6VKR1ZEqNOTSnz83VXOki67ZLgdz7GASo5Qc3oFNlADvxTzqzlBkSeSXpy04TP5fjAWMaocdVGzOMfse831Pwl6rEHmlqE5rrhCYwaD3tirMyD2lA34p04fGRKiFxaSleF6IRqMexJOdkfzmfayYf1/wUvV6FNa74rmWlN50ljqLsBIFojomcLm1NJHEkB/g6CMAO/erqrZHvgNzur9e3bCLsrmnh9Q34uCKtSZ"
 }
 
 variable "instance_log_group" {
