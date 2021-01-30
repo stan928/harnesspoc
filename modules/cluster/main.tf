@@ -4,6 +4,7 @@ terraform {
 	encrypt = false 
 	bucket = "my-terraform-state-s3-x"
 	region = "us-west-2"
+	key="terraform.tfstate"
   }
 }
 
