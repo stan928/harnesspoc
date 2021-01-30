@@ -1,5 +1,10 @@
 terraform {
   required_version = ">= 0.11"
+  backend "s3" {
+	encrypt = false 
+	bucket = "my-terraform-state-s3-x"
+	region = "us-west-2"
+  }
 }
 
 provider "aws" {
